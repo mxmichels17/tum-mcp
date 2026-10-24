@@ -1,0 +1,27 @@
+{
+	"name": "tum-mcp",
+	"version": "0.10.0",
+	"private": true,
+	"license": "MIT",
+	"type": "module",
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"cf-typegen": "wrangler types",
+		"type-check": "tsc --noEmit",
+		"test": "vitest run"
+	},
+	"dependencies": {
+		"@cloudflare/workers-oauth-provider": "^1.2.3",
+		"@modelcontextprotocol/sdk": "1.32.1",
+		"agents": "^0.28.1",
+		"hono": "^4.13.13",
+		"postal-mime": "^4.0.8",
+		"zod": "^4.6.7"
+	},
+	"devDependencies": {
+		"typescript": "^6.0.3",
+		"vitest": "^5.0.5",
+		"wrangler": "^4.151.1"
+	}
+}

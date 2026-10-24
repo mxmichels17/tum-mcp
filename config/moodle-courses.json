@@ -1,0 +1,5 @@
+{
+	"about": "Moodle courses the collector reads. A course is in scope when its Moodle id is in course_ids, or when its Moodle name contains one of the texts in name_contains (case is ignored). All other Moodle courses are left out, and what is stored for them is forgotten without a delta. Add your course ids (the id in course/view.php?id=<id>) or name texts and deploy to change the scope.",
+	"course_ids": [],
+	"name_contains": []
+}

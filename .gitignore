@@ -1,0 +1,40 @@
+# Dependencies and build output
+node_modules/
+.wrangler/
+dist/
+build/
+out/
+coverage/
+*.tsbuildinfo
+
+# Secrets and local environment
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+secrets/
+secrets.*
+credentials*.json
+service-account*.json
+
+# Local data, exports and dumps
+data/
+*.sqlite
+*.sqlite3
+*.db
+*.dump
+*.har
+.scratch/
+
+# Logs and system files
+*.log
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

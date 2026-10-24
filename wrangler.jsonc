@@ -1,0 +1,93 @@
+/**
+ * Wrangler configuration. Docs: https://developers.cloudflare.com/workers/wrangler/configuration/
+ *
+ * Secrets are NOT configured here. Set them in the Cloudflare dashboard
+ * (Worker > Settings > Variables and Secrets) or with `npx wrangler secret put <NAME>`.
+ * See README.md for the full list.
+ *
+ * The KV namespace and the D1 database have no IDs on purpose. Wrangler (>= 4.45)
+ * provisions them automatically on the first deploy, also from Workers Builds.
+ */
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "tum-mcp",
+	"main": "src/index.ts",
+	"compatibility_date": "2026-10-01",
+	// global_fetch_strictly_public is required by the OAuth provider for
+	// Client ID Metadata Documents (CIMD).
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	"migrations": [
+		{
+			"new_sqlite_classes": ["TumMCP"],
+			"tag": "v1"
+		},
+		// 0.6.16 to 0.6.21 had a TUMonline web session Durable Object. 0.7.0 removed it.
+		{
+			"new_sqlite_classes": ["TumonlineWeb"],
+			"tag": "v2"
+		},
+		{
+			"deleted_classes": ["TumonlineWeb"],
+			"tag": "v3"
+		}
+	],
+	"durable_objects": {
+		"bindings": [
+			{
+				"class_name": "TumMCP",
+				"name": "MCP_OBJECT"
+			}
+		]
+	},
+	"kv_namespaces": [
+		// OAuth clients, grants and tokens (required by @cloudflare/workers-oauth-provider).
+		{
+			"binding": "OAUTH_KV"
+		},
+		// Platform tokens and login sessions (TUMonline token, Artemis JWT, Moodle and TUM-Live sessions).
+		{
+			"binding": "CACHE"
+		}
+	],
+	// Collector: last state of every item and the delta log (see docs/TECH.md). Tables are created in code.
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "tum-mcp"
+		}
+	],
+	// Collector: web page HTML, files (attachments, Moodle and Artemis files) and large contents. R2 free tier.
+	"r2_buckets": [
+		{
+			"binding": "FILES",
+			"bucket_name": "tum-files"
+		}
+	],
+	// Public address of this Worker, for the signed download links of collector_item (src/collector/download.ts).
+	// Replace YOUR_SUBDOMAIN with your workers.dev subdomain (or set your own domain).
+	"vars": {
+		"PUBLIC_ORIGIN": "https://tum-mcp.YOUR_SUBDOMAIN.workers.dev"
+	},
+	// Lets the server report which deployed version is running (server_info tool).
+	"version_metadata": {
+		"binding": "CF_VERSION_METADATA"
+	},
+	// The collector calls this Worker once per unit through this binding, so every unit runs in
+	// its own invocation with its own CPU and subrequest budget.
+	"services": [
+		{
+			"binding": "COLLECTOR",
+			"service": "tum-mcp",
+			"entrypoint": "CollectorRunner"
+		}
+	],
+	"triggers": {
+		"crons": ["*/30 * * * *"]
+	},
+	"observability": {
+		"enabled": true
+	},
+	"dev": {
+		"port": 8788
+	}
+}

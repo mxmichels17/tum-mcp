@@ -1,0 +1,4 @@
+{
+	"about": "External course websites the collector reads (read only, GET). start: the first pages. follow: URL prefixes whose pages and files are read when a read page links them; links outside them stay links. Videos are never downloaded. unlock (optional): pages that show links only with an access token in the URL fragment (CryptoJS AES); the token is read at run time from a stored item that contains token_in_items_like and is never stored in the repository. Example entry: { \"id\": \"db\", \"name\": \"Database course\", \"moodle_course\": 12345, \"start\": [\"https://course.example.org/\"], \"follow\": [\"https://course.example.org/slides/\"] }. Add your sites to the list and deploy.",
+	"sites": []
+}
